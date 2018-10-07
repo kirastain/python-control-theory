@@ -1,0 +1,143 @@
+import numpy
+
+def mattransp(a): #транспонирование
+    a = a.transpose()
+    print(a)
+
+def matstep(a): #возведение матрицы в степень
+    print('n=')
+    n=int(input())
+    a = numpy.linalg.matrix_power(a,n)
+    print(a)
+
+def matpl(a): #перемножение матриц
+    print('Введите размерность второй матрицы')
+    q = int(input())
+    r = int(input())
+    print('Введите вторую матрицу')
+    neo = numpy.zeros((q, r), dtype=int)
+    for i in range(q):
+        for j in range(r):
+            neo[i][j] = input()
+    neomatrix = numpy.dot(a, neo)
+    print(neomatrix)
+
+
+def matnabl(a): #матрица наблюдения
+    print('Введите длину матрицы-строки c')
+    m = int(input())
+    c = numpy.zeros((1, m), dtype=int)
+    for i in range(m):
+        c[0][i] = input()
+    print(c)
+    nabl = c
+    n = len(a[1, :])
+    i = 1
+    while i < n:
+        step = numpy.linalg.matrix_power(a, i)
+        step = numpy.dot(c,step)
+        nabl = numpy.vstack((nabl,step[0,:]))
+        i = i + 1
+    print(nabl)
+    return nabl
+
+def matprovnabl(a): #проверка на наблюдаемость
+    nabl = matnabl(a)
+    detn = numpy.linalg.det(nabl)
+    if detn != 0:
+        print('Система является наблюдаемой')
+    else:
+        print('Система не является наблюдемой')
+
+def matupr(a): #матрица управления
+    print('Введите длину матрицы-столбца b')
+    q = int(input())
+    b = numpy.zeros((q, 1), dtype=int)
+    for i in range(q):
+            b[i][0] = input()
+    upr = b
+    print(b)
+    n = len(a[1,:])
+    i = 1
+    while i < n:
+        step = numpy.linalg.matrix_power(a,i)
+        step = numpy.dot(step,b)
+        upr = numpy.column_stack((upr,step[:,0]))
+        i = i + 1
+    print(upr)
+    return upr
+
+
+def matprovupr(a): #проверка на управляемость
+    upr = matupr(a)
+    detu = numpy.linalg.det(upr)
+    if detu != 0:
+        print('Система является управляемой')
+    else:
+        print('Система не является управляемой')
+
+def matrang(a): #ранг матрицы
+    rang = numpy.linalg.matrix_rank(a)
+    print('Ранг матрицы равен {0}'.format(rang))
+def intro(): #создание и заполнение матрицы
+    print('Введите размерность матрицы, строки и столбцы')
+    n = int(input())
+    m = int(input())
+    if n != m:
+        print('При работе не с квадратной матрицей некоторые операции невозможны. Ввести матрицу заново? 1/0')
+        ans = int(input())
+        if ans == 0:
+            pass
+        elif ans == 1:
+            intro()
+        else:
+            print('You can't even type 0 or 1 properly, i'm leaving')
+            exit(0)
+    print('Введите по элементу матрицы')
+    matrix = numpy.zeros((n, m), dtype=int)
+    for i in range(n):
+        for j in range(m):
+            matrix[i][j] = input()
+
+    print(matrix)
+    return matrix
+
+
+def main(): #основное тело программы
+    print("Выберите команду:")
+    print('1: Транспонирование')
+    print('2: Возведение в степень')
+    print('3: Умножение матриц')
+    print('4: Матрица наблюдаемости')
+    print('5: Проверка на наблюдаемость')
+    print('6: Матрица управляемости')
+    print('7: Проверка на управляемость')
+    print('8: Нахождение ранга')
+    print('0: Выйти из программы')
+
+    choose = int(input())
+    if choose == 1:
+        mattransp(matrix)
+    elif choose == 2:
+        matstep(matrix)
+    elif choose == 3:
+        matpl(matrix)
+    elif choose == 4:
+        matnabl(matrix)
+    elif choose == 5:
+        matprovnabl(matrix)
+    elif choose == 6:
+        matupr(matrix)
+    elif choose == 7:
+        matprovupr(matrix)
+    elif choose == 8:
+        matrang(matrix)
+    elif choose == 0:
+        exit(0)
+    else:
+        print('Ne ta comanda')
+        main()
+    main()
+
+matrix = intro()
+main()
