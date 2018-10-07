@@ -1,0 +1,65 @@
+import numpy
+import allhailnumpy as ahn
+from timeit import default_timer as time
+
+def intro():
+    print('Введите по элементу матрицы')
+    matrix = numpy.zeros((3, 3), dtype=int)
+    for i in range(3):
+        for j in range(3):
+            matrix[i][j] = input()
+
+    print(matrix)
+    return matrix
+
+def minors(mat):
+    minors = [[0,0,0],[0,0,0],[0,0,0]]
+    minors[0][0] = mat[1][1] * mat[2][2] - mat[1][2] * mat[2][1]
+    minors[0][1] = (mat[1][0] * mat[2][2] - mat[1][2] * mat[2][0]) * -1
+    minors[0][2] = mat[1][0] * mat[2][1] - mat[1][1] * mat[2][0]
+    minors[1][0] = (mat[0][1] * mat[2][2] - mat[0][2] * mat[2][1]) * -1
+    minors[1][1] = mat[0][0] * mat[2][2] - mat[0][2] * mat[2][0]
+    minors[1][2] = (mat[0][0] * mat[2][1] - mat[0][1] * mat[2][0]) * -1
+    minors[2][0] = mat[0][1] * mat[1][2] - mat[0][2] * mat[1][1]
+    minors[2][1] = (mat[0][0] * mat[1][2] - mat[0][2] * mat[1][0]) * -1
+    minors[2][2] = mat[0][0] * mat[1][1] - mat[0][1] * mat[1][0]
+    return minors
+
+
+def obrmat(matrix):
+    det = ahn.deter(matrix)
+    det = 1 / det
+    dops = minors(matrix)
+    ahn.transp(dops)
+
+    for i in range(3):
+        for j in range(3):
+            dops[i][j] = dops[i][j] * det
+    return (dops)
+
+matrix = intro()
+
+start1 = time()
+b = numpy.linalg.matrix_power(matrix, -1)
+print('С numpy:')
+print(b)
+end1 = time()
+print('TIME 1')
+time1 = end1 - start1
+print(time1)
+
+start2 = time()
+b2 = obrmat(matrix)
+print('Без numpy')
+print(b2[0])
+print(b2[1])
+print(b2[2])
+end2 = time()
+print('TIME 2')
+time2 = end2 - start2
+print(time2)
+
+if time1 < time2:
+    print('numpy быстрее')
+else:
+    print('свой быстрее')
